@@ -35,7 +35,7 @@ iris = datasets.load_iris()
 # In[40]:
 
 
-Y = PCA(n_components=3).fit_transform(iris.data)
+Y = PCA(n_components=2).fit_transform(iris.data)
 
 
 # In[48]:
@@ -73,12 +73,14 @@ import numpy as np
 import numpy as np
 import matplotlib.pyplot as plt
 from itertools import cycle
-class AffinityPropagation:
+
+class AffinityPropagation():
     #!/usr/bin/env python
     # coding: utf-8
     #idk if assuming x as 2D maybe or not
 
-
+    global A,R,S
+    
 
     #To create dataset
     # np.random.seed(3)
@@ -103,10 +105,10 @@ class AffinityPropagation:
     # In[21]:
 
 
-    def similarity(xi, xj):
+    def similarity(self,xi, xj):
         return -((xi - xj)**2).sum()
 
-    def create_matrices():
+    def create_matrices(self):
         S = np.zeros((x.shape[0], x.shape[0]))
         R = np.array(S)
         A = np.array(S)
@@ -114,7 +116,7 @@ class AffinityPropagation:
         # compute similarity for every data point.
         for i in range(x.shape[0]):
             for k in range(x.shape[0]):
-                S[i, k] = similarity(x[i], x[k])
+                S[i, k] = self.similarity(x[i], x[k])
                 
         return A, R, S
 
@@ -140,9 +142,9 @@ class AffinityPropagation:
 
 
     # In[35]:
-
-
-    def update_r(damping=0.9):
+    global R
+    # R = create_matrices()
+    def update_r(self,damping=0.9):
         global R
         v = S + A
         rows = np.arange(x.shape[0])
@@ -182,8 +184,8 @@ class AffinityPropagation:
 
     # In[39]:
 
-
-    def update_a(damping = 0.9):
+    global A
+    def update_a(self,damping = 0.9):
         global A
         k_k_idx = np.arange(x.shape[0])
         # set a(i, k)
@@ -221,7 +223,7 @@ class AffinityPropagation:
     # In[49]:
 
 
-    def plot_iteration(A, R,iteration):
+    def plot_iteration(self,A, R,iteration):
         fig = plt.figure(figsize=(12, 6))
         sol = A + R
         # every data point i chooses the maximum index k
@@ -253,13 +255,15 @@ class AffinityPropagation:
 
     # In[50]:
 
-    def __init__(X,damp,max_iters):
+    def __init__(self,X,damp= 0.7,max_iters = 100):
         global x 
         x = X
         damping = damp
         iterations = max_iters
-
-        A, R, S = create_matrices()
+        global A
+        global R
+        global S
+        A, R, S = self.create_matrices()
         preference = np.median(S)
         np.fill_diagonal(S, preference)
         # damping = 0.5
@@ -271,14 +275,14 @@ class AffinityPropagation:
         c = 0
         last_i = 0
         for i in range(iterations):
-            update_r(damping)
-            update_a(damping)
+            self.update_r(damping)
+            self.update_a(damping)
             
             sol = A + R
             exemplars = np.unique(np.argmax(sol, axis=1))
             
             if last_exemplars.size != exemplars.size or np.all(last_exemplars != exemplars):
-                fig, labels, exemplars = plot_iteration(A, R, i)
+                fig, labels, exemplars = self.plot_iteration(A, R, i)
                 figures.append(fig)
                 last_i = i
             else :
@@ -480,133 +484,14 @@ def call_dbscan(Y):
         plt.clf()
 
 def call_affinity():
-    pass
+    os.system("rm -r Outputs/AffinityPropogations")
+    os.mkdir("Outputs/AffinityPropogations")
+
+    AffinityPropagation(Y,damp=0.9)
 
 
-root = Tk()
-
-class Visualizer:
-    _params = []    # Protected Member can be accessed  within class or subclass
-    # Private Members of the class
-    __entry_1 = Entry()
-    __entry_2 = Entry()
-    __entry_3 = Entry()
-    __ck = StringVar()
-    __c2 = StringVar()
-    __c3 = StringVar()
-    __c4 = StringVar()
-    __entry_4b = Entry()
-    __var = IntVar()
-    __entry_7 = Entry()
-    __entry_8 = Entry()
-    filename = ""
-    # ----------------------------
-    def __init__(self):
-        self._params = ['Himesh','Singh','example@example.com','+91','12121','Male','12345','12345'
-                        ,'1996-12-12','1996','12','12']
-
-    def __del__(self):
-        self._params = []
-
-    def special_match(self,strg, search=re.compile(r'[^a-zA-Z.]').search):
-
-        return not bool(search(strg))
-
-    def num_match(self,strg, search=re.compile(r'[^0-9.]').search):
-
-        return not bool(search(strg))
-
-    def mainget(self):
-        pass
-
-    def browseFiles(self):
-        self.filename = filedialog.askopenfilename(initialdir = "/", title = "Select a File",filetypes = (("Text files","*.txt*"),("all files","*.*")))
-        
-        print(self.filename)
-
-
-        
-    def layout(self):
-        root.title('Clustering Visualizer')
-        canvas = Canvas(root,width=720,height=800,bg="grey")
-        box=canvas.create_rectangle(700,720,20,20,fill="snow3")
-        canvas.pack(expand=YES)
-        # label1=Label(canvas,text="Select File",font=("Times",14),fg="black",bg="snow3")
-        # label1.place(x=60,y=150)
-        w = Button(canvas,text="Select File",width=20,height=2,bd=4,font=("Times",10,"bold"),command=self.browseFiles)
-        w.place(x=60,y=120)
-        # self.__entry_1= Entry(canvas,bg="white",bd=4)
-        # self.__entry_1.place(x=180,y=150)
-        # label2=Label(canvas,text="Last Name",font=("Times",14),fg="black",bg="snow3",)
-        # label2.place(x=350,y=150)
-        # self.__entry_2= Entry(canvas,bg="white",bd=4)
-        # self.__entry_2.place(x=470,y=150)
-        # label3=Label(canvas,text="Email ",font=("Times",14),fg="black",bg="snow3",)
-        # label3.place(x=60,y=220)
-        # self.__entry_3= Entry(canvas,bg="white",width=50,bd=4)
-        # self.__entry_3.place(x=180,y=220)
-        # label4=Label(canvas,text="Mobile",font=("Times",14),fg="black",bg="snow3")
-        # label4.place(x=60,y=290)
-
-        list1 = ["Affinity Propogation","Kmeans","DBScan"];
-
-        droplist=OptionMenu(canvas,self.__ck,*list1)
-        self.__ck.set('Kmeans')
-        droplist.place(x=60,y=170)
-        # self.__entry_4b= Entry(canvas,bg="white",width=39,bd=4)
-        # self.__entry_4b.place(x=260,y=290)
-        # label_5 = Label(canvas, text="Gender",font=("Times", 14),fg="black",bg="snow3")
-        # label_5.place(x=60,y=360)
-
-        # Radiobutton(canvas, text="Male",padx = 10, variable=self.__var, value=1,bg="snow3").place(x=180,y=360)
-        # Radiobutton(canvas, text="Female",padx = 20, variable=self.__var, value=2,bg="snow3").place(x=250,y=360)
-
-        # label6=Label(canvas,text="Date of Birth",font=("Times",14),fg="black",bg="snow3")
-        # label6.place(x=60,y=430)
-
-        # list2 = []
-        # for i in range(1980,2017):
-        #     list2.append('{}'.format(i))
-
-        # droplist2=OptionMenu(canvas,self.__c2,*list2)
-        # self.__c2.set("Year")
-        # droplist2.place(x=400,y=430)
-
-        # list3 = []
-        # for i in range(1,13):
-        #     list3.append('{}'.format(i))
-
-        # droplist3=OptionMenu(canvas,self.__c3,*list3)
-        # self.__c3.set("Month")
-        # droplist3.place(x=300,y=430)
-
-        # list4 = []
-        # for i in range(1,32):
-        #     list4.append('{}'.format(i))
-
-        # droplist4=OptionMenu(canvas,self.__c4,*list4)
-        # self.__c4.set("Date")
-        # droplist4.place(x=200,y=430)
-
-        # label7=Label(canvas,text="Password",font=("Times",14),fg="black",bg="snow3",)
-        # label7.place(x=60,y=500)
-        # self.__entry_7= Entry(canvas,bg="white",width=50,show="*",bd=4)
-        # self.__entry_7.place(x=180,y=500)
-        # label8=Label(canvas,text="Password Must be atleast 8 characters long",font=("Times",7),fg="black",bg="snow3",)
-        # label8.place(x=180,y=530)
-
-        # label8=Label(canvas,text="Confirm",font=("Times",14),fg="black",bg="snow3",)
-        # label8.place(x=60,y=560)
-        # label9=Label(canvas,text="Password",font=("Times",14),fg="black",bg="snow3",)
-        # label9.place(x=60,y=590)
-        # self.__entry_8= Entry(canvas,bg="white",width=50,show="*",bd=4)
-        # self.__entry_8.place(x=180,y=570)
-        w = Button(canvas,text="Submit",width=20,height=2,bd=4,font=("Times",10,"bold"),command=self.mainget)
-        w.place(x=270,y=640)
 
 
 
 if __name__ == "__main__":
-    reg = Visualizer()
-    reg.layout()
-    root.mainloop()
+    call_affinity()
