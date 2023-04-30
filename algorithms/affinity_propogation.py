@@ -121,7 +121,7 @@ class AffinityPropagation():
 
     # In[50]:
 
-    def __init__(self, X, damp=0.7, max_iters=100):
+    def __init__(self, X=Y, damp=0.7, max_iters=100):
         global x
         x = X
         damping = damp
@@ -162,7 +162,7 @@ class AffinityPropagation():
             last_exemplars = exemplars
 
 
-def call_affinity():
+def call_affinity(dataset, damping_factor, max_iterations):
     # set working directory as the parent directory
     os.chdir("..")
     # debug: print current working directory
@@ -170,8 +170,11 @@ def call_affinity():
     os.system("rm -r Outputs/AffinityPropogations")
     os.mkdir("Outputs/AffinityPropogations")
 
-    AffinityPropagation(Y, damp=0.9)
+    # AffinityPropagation(dataset, damping_factor, max_iterations)
+    AffinityPropagation()
 
 
 if __name__ == "__main__":
-    call_affinity()
+    # print the type of the input
+    print("Type of the input: {0}".format(type(Y)))
+    call_affinity(Y, 0.5, 100)   

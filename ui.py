@@ -1,15 +1,24 @@
-from functools import partial
+# Necessary imports
+import customtkinter
 from tkinter import *
 from tkinter import filedialog
 from PIL import ImageTk, Image
 import os
-import customtkinter
 
+
+# Import algorithms
 from algorithms.affinity_propogation import call_affinity
 from algorithms.db_scan import call_dbscan
 from algorithms.k_means import call_kmeans
 
 
+# Import file_readers
+from file_readers.csv_to_ndarray import read_csv
+from file_readers.xlsx_to_ndarray import read_xlsx
+# from from file_readers.xls_to_ndarray import read_xls
+
+
+# Default theme
 theme = "dark"
 
 
@@ -24,11 +33,16 @@ def display_ui():
 
     def browseFiles():
         global filename
-        filename = filedialog.askopenfilename(initialdir=os.path.expanduser("~"),  # Start at user home directory
+        filename = filedialog.askopenfilename(
+                                            # initialdir=os.path.expanduser("~"),  # Start at user home directory
+                                            initialdir=os.getcwd(),  # Start at current directory
                                               title="Select a File",
-                                              filetypes=(("Text files", "*.txt"),
-                                                         ("Excel files", "*.xlsx"),
-                                                         ("CSV files", "*.csv")))  # Hide hidden files and folders
+                                              filetypes=(
+                                                  ("CSV files", "*.csv"),
+                                                  ("Text files", "*.txt"),
+                                                  ("Excel (Current) files", "*.xlsx"),
+                                                  ("Excel (Legacy) files", "*.xls"),
+        ))  # Hide hidden files and folders
         print(filename)
         file = open(filename, 'r')
         # content = file.read()
@@ -53,11 +67,29 @@ def display_ui():
             return
         ret_arr.append(filename)
         ret_arr.append(temp_arr[1])
+
+        # Extract file extension
+        extension = temp_arr[1]
+        
+        # call appropriate file reader
+        input_data = None
+        if extension == "csv":
+            input_data = read_csv(filename, True, False)
+        elif extension == "xlsx":
+            input_data = read_xlsx(filename)
+        elif extension == "xls":
+            print("complete its code Khincha")
+            exit(0)
+        elif extension == "txt":
+            print("complete its code Khincha")
+            exit(0)
+
         if (algo_clicked.get() == "affinity clustering"):
             print(algo_clicked.get())
             ret_arr.append(algo_clicked.get())
             root.destroy()
             affinity_clustering_window()
+            call_affinity(input_data, entry1.get(), entry2.get())
         elif (algo_clicked.get() == "kmeans"):
             print(algo_clicked.get())
             ret_arr.append(algo_clicked.get())
@@ -77,39 +109,29 @@ def display_ui():
         top.geometry("400x250")
         top.title('Affinity Clustering')
 
-        Parameter1 = customtkinter.CTkLabel(top, text="Parameter1")
+        Parameter1 = customtkinter.CTkLabel(top, text="Damping Factor")
         Parameter1.place(relx=0.2, rely=0.3)
 
-        Parameter2 = customtkinter.CTkLabel(top, text="Parameter2")
+        Parameter2 = customtkinter.CTkLabel(top, text="Max ITerations")
         Parameter2.place(relx=0.2, rely=0.4)
-
-        Parameter3 = customtkinter.CTkLabel(top, text="Parameter3")
-        Parameter3.place(relx=0.2, rely=0.5)
 
         global entry1, entry2, entry3
 
         # e1 = customtkinter.CTkEntry(top).place(relx = 0.5,y = 0.1)
         entry1 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="CTkEntry",
+                                        placeholder_text="Between 0 and 1",
                                         width=120,
                                         height=25,
                                         border_width=2,
                                         corner_radius=10)
         entry1.place(relx=0.5, rely=0.3)
         entry2 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="CTkEntry",
+                                        placeholder_text="Between 0 and 1000",
                                         width=120,
                                         height=25,
                                         border_width=2,
                                         corner_radius=10)
         entry2.place(relx=0.5, rely=0.4)
-        entry3 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="CTkEntry",
-                                        width=120,
-                                        height=25,
-                                        border_width=2,
-                                        corner_radius=10)
-        entry3.place(relx=0.5, rely=0.5)
 
         submit_buttonx = customtkinter.CTkButton(
             top, text="Submit", command=submit2).place(relx=0.35, rely=0.75)
