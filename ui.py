@@ -1,11 +1,13 @@
 from functools import partial
-from tkinter import OptionMenu, StringVar, filedialog
 from tkinter import *
+from tkinter import filedialog
 from PIL import ImageTk, Image
 import os
-from functools import partial
-from tkinter import OptionMenu, StringVar, filedialog
 import customtkinter
+
+from algorithms.affinity_propogation import call_affinity
+from algorithms.db_scan import call_dbscan
+from algorithms.k_means import call_kmeans
 
 
 theme = "dark"
@@ -22,16 +24,14 @@ def display_ui():
 
     def browseFiles():
         global filename
-        filename = filedialog.askopenfilename(initialdir="/home/techniche",
+        filename = filedialog.askopenfilename(initialdir=os.path.expanduser("~"),  # Start at user home directory
                                               title="Select a File",
-                                              filetypes=(("Text files",
-                                                          "*.*"),
-                                                         ("all files",
-                                                          "*.*")))
-
+                                              filetypes=(("Text files", "*.txt"),
+                                                         ("Excel files", "*.xlsx"),
+                                                         ("CSV files", "*.csv")))  # Hide hidden files and folders
         print(filename)
         file = open(filename, 'r')
-        content = file.read()
+        # content = file.read()
         print(algo_clicked.get())
         browse_button.configure(text=filename.split("/")[-1])
         ret_arr.append(filename)
@@ -359,5 +359,4 @@ def after_ui():
 
 
 display_ui()
-
 print(ret_arr)
