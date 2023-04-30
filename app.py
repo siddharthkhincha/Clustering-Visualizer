@@ -67,8 +67,6 @@ def kmeans(X, K, max_iters=100):
 # In[42]:
 
 
-import numpy as np
-
 # def affinity_propagation(X, max_iter=200, conv_threshold=1e-5, damping=0.9, verbose=False):
 #     # Initialize variables
 #     N = X.shape[0]
@@ -349,8 +347,6 @@ class AffinityPropagation():
             last_sol = sol
             last_exemplars = exemplars
 
-
-import numpy
 
 def dbscan(D, eps=0.5, MinPts=5):
     '''
