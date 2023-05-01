@@ -15,8 +15,8 @@ from algorithms.k_means import call_kmeans
 # Import file_readers
 from file_readers.csv_to_ndarray import read_csv
 from file_readers.xlsx_to_ndarray import read_xlsx
-from file_readers.xls_to_ndarray import read_xls
-from file_readers.mat_to_ndarray import read_mat
+# from from file_readers.xls_to_ndarray import read_xls
+
 
 # Default theme
 theme = "dark"
@@ -27,7 +27,7 @@ FOLDER_PATH = "./Outputs/"
 
 def display_ui():
 
-    file_types = ["csv", "xlsx", "xls","mat"]
+    file_types = ["csv", "xlsx", "xls"]
 
     customtkinter.set_appearance_mode("dark")
 
@@ -45,7 +45,6 @@ def display_ui():
                 ("Text files", "*.txt"),
                 ("Excel (Current) files", "*.xlsx"),
                 ("Excel (Legacy) files", "*.xls"),
-                ("Matlab files","*.mat")
             )) 
         print(filename)
         file = open(filename, 'r')
@@ -71,23 +70,32 @@ def display_ui():
             return
         ret_arr.append(filename)
         ret_arr.append(temp_arr[1])
-
+        global has_header
+        has_header = False
+        if(drop4.get()=="Yes"):
+            has_header = True
+        print(has_header)
+        global dimensions
+        dimensions = 2
+        if(drop3.get()=="3-D"):
+            dimensions = 3
+        print(dimensions)
         # Extract file extension
         extension = temp_arr[1]
 
         # call appropriate file reader
         global input_data
-        print(extension)
-
         if extension == "csv":
-            input_data = read_csv(filename, True, False, 2)
+            input_data = read_csv(filename, True, True, 3)
         elif extension == "xlsx":
             input_data = read_xlsx(filename)
         elif extension == "xls":
-           input_data = read_xls(filename)
-        elif extension == "mat":
-            print("HERE")
-            input_data = read_mat(filename,n_components=2)
+            print("complete its code Khincha")
+            exit(0)
+        elif extension == "txt":
+            print("complete its code Khincha")
+            exit(0)
+
         if (algo_clicked.get() == "affinity clustering"):
             print(algo_clicked.get())
             ret_arr.append(algo_clicked.get())
@@ -106,7 +114,7 @@ def display_ui():
 
     def affinity_clustering_window():
 
-        global topTrue
+        global top
         top = customtkinter.CTk()
 
         top.geometry("400x250")
@@ -224,13 +232,13 @@ def display_ui():
 
     global root
     root = customtkinter.CTk()
-    root.geometry('400x200+100+200')
+    root.geometry('500x300+100+200')
     customtkinter.set_appearance_mode("dark")
     root.title('PLL')
 
     # algorithm type dropdown
     labelNum1 = customtkinter.CTkLabel(root, text="Choose algorithm")
-    labelNum1.place(relx=0.15, rely=0.2)
+    labelNum1.place(relx=0.15, rely=0.1)
 
     algo_clicked = customtkinter.StringVar(value="affinity clustering")
 
@@ -238,7 +246,28 @@ def display_ui():
                                         values=["affinity clustering",
                                                 "dbscan", "kmeans"],
                                         variable=algo_clicked)
-    drop2.place(relx=0.5, rely=0.2)
+    drop2.place(relx=0.5, rely=0.1)
+
+    DimensionLabel = customtkinter.CTkLabel(root, text="Choose dimensions")
+    DimensionLabel.place(relx=0.15, rely=0.2)
+
+    dimensions = customtkinter.StringVar(value="2-D")
+
+    drop3 = customtkinter.CTkOptionMenu(master=root,
+                                        values=["2-D","3-D"],
+                                        variable=dimensions)
+    drop3.place(relx=0.5, rely=0.2)
+
+    HeaderLabel = customtkinter.CTkLabel(root, text="Data Headers:")
+    HeaderLabel.place(relx=0.15, rely=0.3)
+
+    header = customtkinter.StringVar(value="No")
+
+    drop4 = customtkinter.CTkOptionMenu(master=root,
+                                        values=["No","Yes"],
+                                        variable=header)
+    drop4.place(relx=0.5, rely=0.3)
+
 
     # browse files button
     labelNum2 = customtkinter.CTkLabel(root, text="Input Data File:")
@@ -391,3 +420,4 @@ def after_ui(algorithm):
 
 display_ui()
 print(ret_arr)
+print(has_header)
