@@ -75,7 +75,7 @@ def display_ui():
         extension = temp_arr[1]
 
         # call appropriate file reader
-        global input_data 
+        global input_data
         if extension == "csv":
             input_data = read_csv(filename, True, True, 3)
         elif extension == "xlsx":
@@ -117,13 +117,10 @@ def display_ui():
         Parameter1 = customtkinter.CTkLabel(top, text="Damping Factor")
         Parameter1.place(relx=0.2, rely=0.3)
 
-        Parameter2 = customtkinter.CTkLabel(top, text="Max ITerations")
+        Parameter2 = customtkinter.CTkLabel(top, text="Max Iterations")
         Parameter2.place(relx=0.2, rely=0.4)
 
-        global entry1, entry2, entry3
-
-        # entry3 is null
-        entry3 = None
+        global entry1, entry2
 
         # e1 = customtkinter.CTkEntry(top).place(relx = 0.5,y = 0.1)
         entry1 = customtkinter.CTkEntry(master=top,
@@ -143,8 +140,7 @@ def display_ui():
 
         submit_buttonx = customtkinter.CTkButton(
             top, text="Submit", command=submit2).place(relx=0.35, rely=0.75)
-        # ret_arr.append([entry1.get(), entry2.get(), entry3.get()])
-        # print(ret_arr)
+
         top.mainloop()
 
     def kmeans_window():
@@ -154,39 +150,28 @@ def display_ui():
         top.geometry("400x250")
         top.title('K-Means')
 
-        Parameter1 = customtkinter.CTkLabel(top, text="Parameter1")
+        Parameter1 = customtkinter.CTkLabel(top, text="Number of Clusters")
         Parameter1.place(relx=0.2, rely=0.3)
 
-        Parameter2 = customtkinter.CTkLabel(top, text="Parameter2")
+        Parameter2 = customtkinter.CTkLabel(top, text="Max Iterations")
         Parameter2.place(relx=0.2, rely=0.4)
 
-        Parameter3 = customtkinter.CTkLabel(top, text="Parameter3")
-        Parameter3.place(relx=0.2, rely=0.5)
+        global entry1, entry2
 
-        global entry1, entry2, entry3
-
-        # e1 = customtkinter.CTkEntry(top).place(relx = 0.5,y = 0.1)
         entry1 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="CTkEntry",
+                                        placeholder_text=">1, < num_rows",
                                         width=120,
                                         height=25,
                                         border_width=2,
                                         corner_radius=10)
         entry1.place(relx=0.5, rely=0.3)
         entry2 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="CTkEntry",
+                                        placeholder_text="> 0 , < 1000",
                                         width=120,
                                         height=25,
                                         border_width=2,
                                         corner_radius=10)
         entry2.place(relx=0.5, rely=0.4)
-        entry3 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="CTkEntry",
-                                        width=120,
-                                        height=25,
-                                        border_width=2,
-                                        corner_radius=10)
-        entry3.place(relx=0.5, rely=0.5)
 
         submit_buttonx = customtkinter.CTkButton(
             top, text="Submit", command=submit2).place(relx=0.35, rely=0.75)
@@ -201,56 +186,44 @@ def display_ui():
         top.geometry("400x250")
         top.title('DB Scan')
 
-        Parameter1 = customtkinter.CTkLabel(top, text="Parameter1")
+        Parameter1 = customtkinter.CTkLabel(top, text="Epsilon")
         Parameter1.place(relx=0.2, rely=0.3)
 
-        Parameter2 = customtkinter.CTkLabel(top, text="Parameter2")
+        Parameter2 = customtkinter.CTkLabel(top, text="Min Points")
         Parameter2.place(relx=0.2, rely=0.4)
 
-        Parameter3 = customtkinter.CTkLabel(top, text="Parameter3")
-        Parameter3.place(relx=0.2, rely=0.5)
-
-        global entry1, entry2, entry3
+        global entry1, entry2
 
         # e1 = customtkinter.CTkEntry(top).place(relx = 0.5,y = 0.1)
         entry1 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="CTkEntry",
+                                        placeholder_text="> 0 , < 1",
                                         width=120,
                                         height=25,
                                         border_width=2,
                                         corner_radius=10)
         entry1.place(relx=0.5, rely=0.3)
         entry2 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="CTkEntry",
+                                        placeholder_text="> 0 , < 1000",
                                         width=120,
                                         height=25,
                                         border_width=2,
                                         corner_radius=10)
         entry2.place(relx=0.5, rely=0.4)
-        entry3 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="CTkEntry",
-                                        width=120,
-                                        height=25,
-                                        border_width=2,
-                                        corner_radius=10)
-        entry3.place(relx=0.5, rely=0.5)
 
         submit_buttonx = customtkinter.CTkButton(
             top, text="Submit", command=submit2).place(relx=0.35, rely=0.75)
-        # ret_arr.append([entry1.get(), entry2.get(), entry3.get()])
-        # print(ret_arr)
         top.mainloop()
 
     def submit2():
-     
+
         # call the appropriate algorithms
         if algo_clicked.get() == "affinity clustering":
-            call_affinity(input_data, entry1.get(), entry2.get())
+            call_affinity(input_data, float(entry1.get()), int(entry2.get()))
         elif algo_clicked.get() == "dbscan":
-            call_dbscan(input_data, entry1.get(), entry2.get())
+            call_dbscan(input_data, float(entry1.get()), int(entry2.get()))
         elif algo_clicked.get() == "kmeans":
-            call_kmeans(input_data, entry1.get(), entry2.get())
-        
+            call_kmeans(input_data, int(entry1.get()), int(entry2.get()))
+
         top.destroy()
         after_ui(algo_clicked.get())
 
@@ -265,8 +238,6 @@ def display_ui():
     labelNum1.place(relx=0.15, rely=0.2)
 
     algo_clicked = customtkinter.StringVar(value="affinity clustering")
-    # algo_clicked.set( "affinity clustering" )
-    # drop2 = customtkinter.CTkOptionMenu( root , algo_clicked , *algo_options )
 
     drop2 = customtkinter.CTkOptionMenu(master=root,
                                         values=["affinity clustering",
@@ -353,15 +324,16 @@ def slideshow(algorithm):
     slideshow_root = customtkinter.CTk()
 
     slideshow_root.title("Image Viewer")
-    slideshow_root.geometry("432x450")
+    # slideshow_root.geometry("432x450")
+    # slideshow should start with full screen
+    slideshow_root.attributes('-fullscreen', True)
 
-    
     if algorithm == "affinity clustering":
-        folder_path = FOLDER_PATH  + "AffinityPropogations/" 
+        folder_path = FOLDER_PATH + "AffinityPropogations/"
     if algorithm == "dbscan":
         folder_path = FOLDER_PATH + "DBScan/"
     if algorithm == "kmeans":
-        folder_path = FOLDER_PATH + "KMeans/"
+        folder_path = FOLDER_PATH + "Kmeans/"
     List_images = []
     total_image = len(os.listdir(folder_path))
     print(len(os.listdir(folder_path)))

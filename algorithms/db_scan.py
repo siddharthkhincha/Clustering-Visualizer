@@ -149,12 +149,12 @@ def region_query(D, P, eps):
     return neighbors
 
 
-def call_dbscan(Y):
+def call_dbscan(dataset,epsilon=0.5,MinPts=5):
     # os.chdir("..")
     os.system("rm -r Outputs/DBScan")
     os.mkdir("Outputs/DBScan")
 
-    all_labels = dbscan(Y)
+    all_labels = dbscan(dataset, epsilon, MinPts)
     for i in range(len(all_labels)):
         labels = all_labels[i]
         ax = plt.axes(projection ="3d")

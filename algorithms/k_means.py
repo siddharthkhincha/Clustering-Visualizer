@@ -31,11 +31,11 @@ def kmeans(X, K, max_iters=100):
 #         plt.show()
     return all_centroids,all_labels
 
-def call_kmeans(Y):
+def call_kmeans(dataset, num_clusters=3, max_iters=100):
     # os.chdir("..")
     os.system("rm -r Outputs/Kmeans")
     os.mkdir("Outputs/Kmeans")
-    all_centroids, all_labels = kmeans(Y, K=3)
+    all_centroids, all_labels = kmeans(dataset, num_clusters, max_iters)
     for i in range(100):
         if i!=0 and np.array_equal(all_centroids[i],all_centroids[i-1]) and np.array_equal(all_labels[i],all_labels[i-1]):
             break
