@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 from sklearn import datasets
 from sklearn.decomposition import PCA
 
-color_list = ['#001f3f', '#003300', '#8B0000', '#008b8b', '#8B008B', '#B8860B', '#2E2E2E', '#1C1C1C', '#8B2500', '#4B0082', '#A52A2A', '#8B5F65', '#4F4F4F', '#556B2F', '#800000', '#000080', '#008080', '#FF7F50', '#FFD700', '#4B0082', '#BDB76B', '#8B668B', '#32CD32', '#9932CC', '#8B4726', '#8B668B', '#FA8072', '#8B3A3A', '#8B6969', '#40E0D0', '#EE82EE', '#F5DEB3', '#7FFFD4', '#F0FFFF', '#F5F5DC', '#7FFF00', '#6495ED', '#DC143C', '#00008B', '#008B8B', '#B8860B', '#696969', '#006400', '#BDB76B', '#8B008B', '#556B2F', '#FF8C00', '#9932CC', '#8B0000', '#E9967A']
+color_list = ['#001f3f', '#003300', '#8B0000', '#008b8b', '#8B008B', '#B8860B', '#2E2E2E', '#1C1C1C', '#8B2500', '#4B0082', '#A52A2A', '#8B5F65', '#4F4F4F', '#556B2F', '#800000', '#000080', '#008080', '#FF7F50', '#FFD700', '#4B0082', '#BDB76B', '#8B668B', '#32CD32', '#9932CC',
+              '#8B4726', '#8B668B', '#FA8072', '#8B3A3A', '#8B6969', '#40E0D0', '#EE82EE', '#F5DEB3', '#7FFFD4', '#F0FFFF', '#F5F5DC', '#7FFF00', '#6495ED', '#DC143C', '#00008B', '#008B8B', '#B8860B', '#696969', '#006400', '#BDB76B', '#8B008B', '#556B2F', '#FF8C00', '#9932CC', '#8B0000', '#E9967A']
 
 
 def dbscan(D, eps=0.5, MinPts=5):
@@ -142,12 +143,11 @@ def region_query(D, P, eps):
         # If the distance is below the threshold, add it to the neighbors list.
         if numpy.linalg.norm(D[P] - D[Pn]) < eps:
             neighbors.append(Pn)
-       
 
     return neighbors
 
 
-def call_dbscan(dataset,epsilon=0.5,MinPts=5):
+def call_dbscan(dataset, epsilon=0.5, MinPts=5):
     # os.chdir("..")
     os.system("rm -r Outputs/DBScan")
     os.mkdir("Outputs/DBScan")
@@ -155,20 +155,21 @@ def call_dbscan(dataset,epsilon=0.5,MinPts=5):
     all_labels = dbscan(dataset, epsilon, MinPts)
     for i in range(len(all_labels)):
         labels = all_labels[i]
-        dataset2 = numpy.array([list(dataset[i]) for i in range(0,len(dataset)) if labels[i]!=-1])
-        labels = [i for i in labels if i!=-1]
+        dataset2 = numpy.array([list(dataset[i])
+                               for i in range(0, len(dataset)) if labels[i] != -1])
+        labels = [i for i in labels if i != -1]
         colormap = [color_list[i] for i in labels]
         # print(dataset2)
-        if len(dataset2)>0:
-            if len(dataset[0])==3:
-                ax = plt.axes(projection ="3d")
-                ax.scatter(dataset2[:, 0], dataset2[:, 1],dataset2[:,2], c=colormap)
+        if len(dataset2) > 0:
+            if len(dataset[0]) == 3:
+                ax = plt.axes(projection="3d")
+                ax.scatter(dataset2[:, 0], dataset2[:, 1],
+                           dataset2[:, 2], c=colormap)
             else:
                 plt.scatter(dataset2[:, 0], dataset2[:, 1], c=colormap)
-        
-        
+
         plt.savefig('Outputs/DBScan/output'+str(i)+".png")
         plt.clf()
         plt.close()
-        
+
     print("DBScan Done")

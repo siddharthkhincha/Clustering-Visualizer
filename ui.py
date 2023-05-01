@@ -25,14 +25,12 @@ theme = "dark"
 FOLDER_PATH = "./Outputs/"
 
 
+##############################################################################################################
+############################ MAIN GUI ########################################################################
+
 def display_ui():
 
-    file_types = ["csv", "xlsx", "xls","mat"]
-
-    customtkinter.set_appearance_mode("dark")
-    global has_header, plot_dimension_choice
-    global ret_arr
-    ret_arr = []
+    ############################ HELPER FUNCTIONS ################################################################
 
     def browseFiles():
         global filename
@@ -45,8 +43,8 @@ def display_ui():
                 ("Text files", "*.txt"),
                 ("Excel (Current) files", "*.xlsx"),
                 ("Excel (Legacy) files", "*.xls"),
-                ("Matlab files","*.mat")
-            )) 
+                ("Matlab files", "*.mat")
+            ))
         print(filename)
         file = open(filename, 'r')
         # content = file.read()
@@ -84,14 +82,18 @@ def display_ui():
             print(has_header)
             print(type(plot_dimension_choice))
             print(plot_dimension_choice)
-            input_data = read_csv(filename,has_header, True, plot_dimension_choice)
+            input_data = read_csv(filename, has_header,
+                                  True, plot_dimension_choice)
         elif extension == "xlsx":
-            input_data = read_xlsx(filename,has_header, True, plot_dimension_choice)
+            input_data = read_xlsx(filename, has_header,
+                                   True, plot_dimension_choice)
         elif extension == "xls":
-           input_data = read_xls(filename,has_header, True, plot_dimension_choice)
+            input_data = read_xls(filename, has_header,
+                                  True, plot_dimension_choice)
         elif extension == "mat":
             print("HERE")
-            input_data = read_mat(filename,has_header, True, plot_dimension_choice)
+            input_data = read_mat(filename, has_header,
+                                  True, plot_dimension_choice)
         if (algo_clicked.get() == "affinity clustering"):
             print(algo_clicked.get())
             ret_arr.append(algo_clicked.get())
@@ -123,7 +125,7 @@ def display_ui():
         Parameter2.place(relx=0.2, rely=0.4)
 
         global entry1, entry2
-        
+
         entry1 = customtkinter.CTkEntry(master=top,
                                         placeholder_text="> 0 , < 1",
                                         width=120,
@@ -226,6 +228,27 @@ def display_ui():
         top.destroy()
         after_ui(algo_clicked.get())
 
+    def change_theme():
+        global num  # add this line
+        print(num)
+        if num == 0:
+            customtkinter.set_appearance_mode("light")
+            num = 1
+        else:
+            customtkinter.set_appearance_mode("dark")
+            num = 0
+        print(num)
+
+
+    ############################ BUILDING UI ###################################################################
+
+    file_types = ["csv", "xlsx", "xls", "mat"]
+
+    customtkinter.set_appearance_mode("dark")
+    global has_header, plot_dimension_choice
+    global ret_arr
+    ret_arr = []
+
     global root
     root = customtkinter.CTk()
     root.geometry('500x300+100+200')
@@ -233,7 +256,7 @@ def display_ui():
     root.title('PLL')
 
     # algorithm type dropdown
-    
+
     labelNum1 = customtkinter.CTkLabel(root, text="Choose algorithm")
     labelNum1.place(relx=0.15, rely=0.1)
 
@@ -251,7 +274,7 @@ def display_ui():
     dimensions = customtkinter.StringVar(value="3-D")
 
     drop3 = customtkinter.CTkOptionMenu(master=root,
-                                        values=["1-D","2-D","3-D"],
+                                        values=["1-D", "2-D", "3-D"],
                                         variable=dimensions)
     drop3.place(relx=0.5, rely=0.2)
 
@@ -261,18 +284,16 @@ def display_ui():
     header = customtkinter.StringVar(value="No")
 
     drop4 = customtkinter.CTkOptionMenu(master=root,
-                                        values=["No","Yes"],
+                                        values=["No", "Yes"],
                                         variable=header)
     drop4.place(relx=0.5, rely=0.3)
-    
-    if(header.get() == "True"):
+
+    if (header.get() == "True"):
         has_header = True
-    else :
+    else:
         has_header = False
     plot_dimension_choice = int(dimensions.get()[:1])
-    
-    
-    
+
     # browse files button
     labelNum2 = customtkinter.CTkLabel(root, text="Input Data File:")
     labelNum2.place(relx=0.15, rely=0.4)
@@ -291,25 +312,19 @@ def display_ui():
     global num
     num = 0
 
-    def change_theme():
-        global num  # add this line
-        print(num)
-        if num == 0:
-            customtkinter.set_appearance_mode("light")
-            num = 1
-        else:
-            customtkinter.set_appearance_mode("dark")
-            num = 0
-        print(num)
-
     submit_button4 = customtkinter.CTkButton(
         root, text="Change Theme", command=change_theme)
     submit_button4.place(relx=0.62, rely=0.85)
 
     root.mainloop()
 
+##############################################################################################################
+############################ OUTPUT VIEWER UI ################################################################
+
 
 def slideshow(algorithm):
+
+    ############################ HELPER FUNCTIONS ##############################################################
 
     def forward(img_no, max_image):
         submit_button.configure(text="Reset")
@@ -354,6 +369,9 @@ def slideshow(algorithm):
 
         # update slider value
         slider.set(img_no)
+
+
+    ############################ BUILDING UI ###################################################################
 
     slideshow_root = customtkinter.CTk()
 
@@ -403,24 +421,34 @@ def slideshow(algorithm):
     slideshow_root.mainloop()
 
 
+##############################################################################################################
+############################ START SLIDESHOW UI ##############################################################
+
 def after_ui(algorithm):
+
+    ############################ HELPER FUNCTIONS ##############################################################
+
+    def show_slideshow(algorithm):
+        root2.destroy()
+        slideshow(algorithm)
+
+    ############################ BUILDING UI ###################################################################
+
     global root2
     root2 = customtkinter.CTk()
     root2.geometry('400x200+100+200')
 
     root2.title('See results')
 
-    def show_slideshow(algorithm):
-        root2.destroy()
-        slideshow(algorithm)
-
-    # slideshow_button = customtkinter.CTkButton(root2, text = "See video").place(relx=0.35,rely=0.4)
-
     slideshow_button = customtkinter.CTkButton(
         root2, text="See slideshow", command=show_slideshow(algorithm)).place(relx=0.35, rely=0.2)
 
     root2.mainloop()
 
+
+
+##############################################################################################################
+############################ MAIN FUNCTION ###################################################################
 
 display_ui()
 print(ret_arr)

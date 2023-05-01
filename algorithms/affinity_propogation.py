@@ -8,7 +8,9 @@ from sklearn.decomposition import PCA
 from itertools import cycle
 
 
-color_list = ['#001f3f', '#003300', '#8B0000', '#008b8b', '#8B008B', '#B8860B', '#2E2E2E', '#1C1C1C', '#8B2500', '#4B0082', '#A52A2A', '#8B5F65', '#4F4F4F', '#556B2F', '#800000', '#000080', '#008080', '#FF7F50', '#FFD700', '#4B0082', '#BDB76B', '#8B668B', '#32CD32', '#9932CC', '#8B4726', '#8B668B', '#FA8072', '#8B3A3A', '#8B6969', '#40E0D0', '#EE82EE', '#F5DEB3', '#7FFFD4', '#F0FFFF', '#F5F5DC', '#7FFF00', '#6495ED', '#DC143C', '#00008B', '#008B8B', '#B8860B', '#696969', '#006400', '#BDB76B', '#8B008B', '#556B2F', '#FF8C00', '#9932CC', '#8B0000', '#E9967A']
+color_list = ['#001f3f', '#003300', '#8B0000', '#008b8b', '#8B008B', '#B8860B', '#2E2E2E', '#1C1C1C', '#8B2500', '#4B0082', '#A52A2A', '#8B5F65', '#4F4F4F', '#556B2F', '#800000', '#000080', '#008080', '#FF7F50', '#FFD700', '#4B0082', '#BDB76B', '#8B668B', '#32CD32', '#9932CC',
+              '#8B4726', '#8B668B', '#FA8072', '#8B3A3A', '#8B6969', '#40E0D0', '#EE82EE', '#F5DEB3', '#7FFFD4', '#F0FFFF', '#F5F5DC', '#7FFF00', '#6495ED', '#DC143C', '#00008B', '#008B8B', '#B8860B', '#696969', '#006400', '#BDB76B', '#8B008B', '#556B2F', '#FF8C00', '#9932CC', '#8B0000', '#E9967A']
+
 
 class AffinityPropagation():
     global A, R, S
@@ -143,10 +145,9 @@ class AffinityPropagation():
         for i in range(iterations):
             self.update_r(damping)
             self.update_a(damping)
-            
+
             sol = A + R
-            
-            
+
             exemplars = np.unique(np.argmax(sol, axis=1))
 
             # if last_exemplars.size != exemplars.size or np.all(last_exemplars != exemplars):
@@ -173,6 +174,7 @@ def call_affinity(dataset, damping_factor, max_iterations):
     os.mkdir("Outputs/AffinityPropogations")
 
     # AffinityPropagation(dataset, damping_factor, max_iterations)
-    print ("Calling Affinity Propogation Clustering on dataset {0} with damping factor {1} and max iterations {2}".format(dataset, damping_factor, max_iterations))
+    print("Calling Affinity Propogation Clustering on dataset {0} with damping factor {1} and max iterations {2}".format(
+        dataset, damping_factor, max_iterations))
     AffinityPropagation(dataset, damping_factor, max_iterations)
-    print ("Affinity Propogation Clustering completed successfully!")
+    print("Affinity Propogation Clustering completed successfully!")

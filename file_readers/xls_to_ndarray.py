@@ -1,6 +1,7 @@
 # TODO
 import pandas as pd
 import numpy as np
+from sklearn.decomposition import PCA
 
 def read_xls(filename, reduce_dimensionality=True, n_components=3):
     # Load the workbook
