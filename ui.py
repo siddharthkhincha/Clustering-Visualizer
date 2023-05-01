@@ -47,8 +47,6 @@ def display_ui():
                 ("Matlab files", "*.mat")
             ))
         print(filename)
-        file = open(filename, 'r')
-        # content = file.read()
         print(algo_clicked.get())
         browse_button.configure(text=filename.split("/")[-1])
         ret_arr.append(filename)
@@ -187,7 +185,10 @@ def display_ui():
             info_file = open("info/Kmeans.txt", "r")
         
         # add the information to the text box
-        info_text.configure(text=info_file.read())    
+        info_text.delete("0.0", "end")
+        info_text.insert("0.0", info_file.read())
+        # print(info_text.cget("text"))
+        info_file.close()    
         
     ############################ BUILDING UI ###################################################################
 
@@ -293,7 +294,6 @@ def display_ui():
     parameters_label = customtkinter.CTkLabel(root, text="Parameters:")
     parameters_label.place(relx=0.05, rely=0.6)
     
-    
     Parameter1 = customtkinter.CTkLabel(root, text="Damping Factor:")
     Parameter1.place(relx=0.05, rely=0.65)
 
@@ -320,9 +320,9 @@ def display_ui():
     info_frame = customtkinter.CTkFrame(root)
     info_frame.place(relx=0.55, rely=0.1, relwidth=0.4, relheight=0.8)
     info_label = customtkinter.CTkLabel(info_frame, text="Information About Algorithm")
-    info_label.place(relx=0.1, rely=0.1)
-    info_text = customtkinter.CTkLabel(info_frame)
-    info_text.place(relx=0.1, rely=0.2, relwidth=0.9, relheight=0.7)
+    info_label.place(relx=0.00, rely=0.00)
+    info_text = customtkinter.CTkTextbox(info_frame)
+    info_text.place(relx=0.05, rely=0.05, relwidth=0.90, relheight=0.90)
     
     load_info()
     
