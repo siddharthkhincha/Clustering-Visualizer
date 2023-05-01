@@ -117,6 +117,7 @@ class AffinityPropagation():
         plt.savefig('Outputs/AffinityPropogations/output' +
                     str(iteration)+".png")
         plt.clf()
+        plt.close()
         return fig, labels, exemplars
 
     # In[50]:

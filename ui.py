@@ -45,7 +45,7 @@ def display_ui():
                 ("Text files", "*.txt"),
                 ("Excel (Current) files", "*.xlsx"),
                 ("Excel (Legacy) files", "*.xls"),
-            ))  # Hide hidden files and folders
+            )) 
         print(filename)
         file = open(filename, 'r')
         # content = file.read()
@@ -92,9 +92,6 @@ def display_ui():
             ret_arr.append(algo_clicked.get())
             root.destroy()  # destroy the window
             affinity_clustering_window()
-            call_affinity(input_data, entry1.get(), entry2.get())
-            print("affinity clustering was called successfully with parameters: ",
-                  entry1.get(), entry2.get())
         elif (algo_clicked.get() == "kmeans"):
             print(algo_clicked.get())
             ret_arr.append(algo_clicked.get())
@@ -121,8 +118,7 @@ def display_ui():
         Parameter2.place(relx=0.2, rely=0.4)
 
         global entry1, entry2
-
-        # e1 = customtkinter.CTkEntry(top).place(relx = 0.5,y = 0.1)
+        
         entry1 = customtkinter.CTkEntry(master=top,
                                         placeholder_text="> 0 , < 1",
                                         width=120,
@@ -175,8 +171,6 @@ def display_ui():
 
         submit_buttonx = customtkinter.CTkButton(
             top, text="Submit", command=submit2).place(relx=0.35, rely=0.75)
-        # ret_arr.append([entry1.get(), entry2.get(), entry3.get()])
-        # print(ret_arr)
         top.mainloop()
 
     def dbscan_window():
@@ -303,6 +297,9 @@ def slideshow(algorithm):
                 slideshow_root, text="Next", command=lambda: forward(img_no+1, max_image))
             button_for.grid(row=5, column=2)
 
+        # update slider value
+        slider.set(img_no)
+
     def back(img_no, max_image):
 
         global label
@@ -320,6 +317,9 @@ def slideshow(algorithm):
             button_for = customtkinter.CTkButton(
                 slideshow_root, text="Next", command=lambda: forward(img_no+1, max_image))
             button_for.grid(row=5, column=2)
+
+        # update slider value
+        slider.set(img_no)
 
     slideshow_root = customtkinter.CTk()
 
@@ -355,6 +355,16 @@ def slideshow(algorithm):
     submit_button = customtkinter.CTkButton(
         slideshow_root, text="Start", command=lambda: forward(1, total_image))
     submit_button.place(relx=0.35, rely=0.75)
+
+    # add slider
+    slider = Scale(slideshow_root, from_=1, to=total_image, orient=HORIZONTAL,
+                   command=lambda value: forward(int(value), total_image))
+    slider.place(relx=0.3, rely=0.85, relwidth=0.4)
+
+    close_button = customtkinter.CTkButton(
+        slideshow_root, text="Close", command=slideshow_root.destroy)
+
+    close_button.place(relx=0.9, rely=0.05)
 
     slideshow_root.mainloop()
 
