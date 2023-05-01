@@ -174,7 +174,21 @@ def display_ui():
             Parameter2.configure(text="Max Iterations")
             entry1.configure(placeholder_text=">0 , < num_points")
             entry2.configure(placeholder_text="> 0 , < 1000")
-            
+        load_info()
+          
+    def load_info():
+        global info_file
+        # read the corresponding file and display the information
+        if algo_clicked.get() == "affinity clustering":
+            info_file = open("info/AffinityPropogation.txt", "r")
+        elif algo_clicked.get() == "dbscan":
+            info_file = open("info/DBscan.txt", "r")
+        elif algo_clicked.get() == "kmeans":
+            info_file = open("info/Kmeans.txt", "r")
+        
+        # add the information to the text box
+        info_text.configure(text=info_file.read())    
+        
     ############################ BUILDING UI ###################################################################
 
     file_types = ["csv", "xlsx", "xls", "mat"]
@@ -302,7 +316,17 @@ def display_ui():
                                     corner_radius=10)
     entry2.place(relx=0.35, rely=0.7)
 
-
+    # Adding the information frame
+    info_frame = customtkinter.CTkFrame(root)
+    info_frame.place(relx=0.55, rely=0.1, relwidth=0.4, relheight=0.8)
+    info_label = customtkinter.CTkLabel(info_frame, text="Information About Algorithm")
+    info_label.place(relx=0.1, rely=0.1)
+    info_text = customtkinter.CTkLabel(info_frame)
+    info_text.place(relx=0.1, rely=0.2, relwidth=0.9, relheight=0.7)
+    
+    load_info()
+    
+    
     # Adding the theme button    
     sun_icon = PhotoImage(file="sun.png")
     moon_icon = PhotoImage(file="moon.png")
@@ -315,6 +339,7 @@ def display_ui():
     theme_button = customtkinter.CTkButton(root, image=moon_icon, command=change_theme, bg_color="transparent", border_width=0, text="" , fg_color="white" )
     theme_button.image = moon_icon
     theme_button.place(relx=0.9, rely=0.05, relwidth=0.05, relheight=0.05)
+
     
     
     #Adding the close button
