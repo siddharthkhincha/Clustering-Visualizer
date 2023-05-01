@@ -30,7 +30,7 @@ def display_ui():
     file_types = ["csv", "xlsx", "xls","mat"]
 
     customtkinter.set_appearance_mode("dark")
-
+    global has_header, plot_dimension_choice
     global ret_arr
     ret_arr = []
 
@@ -80,14 +80,18 @@ def display_ui():
         print(extension)
 
         if extension == "csv":
-            input_data = read_csv(filename, True, False, 2)
+            print(type(has_header))
+            print(has_header)
+            print(type(plot_dimension_choice))
+            print(plot_dimension_choice)
+            input_data = read_csv(filename,has_header, True, plot_dimension_choice)
         elif extension == "xlsx":
-            input_data = read_xlsx(filename)
+            input_data = read_xlsx(filename,has_header, True, plot_dimension_choice)
         elif extension == "xls":
-           input_data = read_xls(filename)
+           input_data = read_xls(filename,has_header, True, plot_dimension_choice)
         elif extension == "mat":
             print("HERE")
-            input_data = read_mat(filename,n_components=2)
+            input_data = read_mat(filename,has_header, True, plot_dimension_choice)
         if (algo_clicked.get() == "affinity clustering"):
             print(algo_clicked.get())
             ret_arr.append(algo_clicked.get())
@@ -106,7 +110,7 @@ def display_ui():
 
     def affinity_clustering_window():
 
-        global topTrue
+        global top
         top = customtkinter.CTk()
 
         top.geometry("400x250")
@@ -241,13 +245,13 @@ def display_ui():
                                         variable=algo_clicked)
     drop2.place(relx=0.5, rely=0.1)
 
-    DimensionLabel = customtkinter.CTkLabel(root, text="Choose dimensions")
+    DimensionLabel = customtkinter.CTkLabel(root, text="Choose plot dimension")
     DimensionLabel.place(relx=0.15, rely=0.2)
 
-    dimensions = customtkinter.StringVar(value="< 3-D")
+    dimensions = customtkinter.StringVar(value="3-D")
 
     drop3 = customtkinter.CTkOptionMenu(master=root,
-                                        values=["< 3-D",">= 3-D"],
+                                        values=["1-D","2-D","3-D"],
                                         variable=dimensions)
     drop3.place(relx=0.5, rely=0.2)
 
@@ -260,7 +264,15 @@ def display_ui():
                                         values=["No","Yes"],
                                         variable=header)
     drop4.place(relx=0.5, rely=0.3)
-
+    
+    if(header.get() == "True"):
+        has_header = True
+    else :
+        has_header = False
+    plot_dimension_choice = int(dimensions.get()[:1])
+    
+    
+    
     # browse files button
     labelNum2 = customtkinter.CTkLabel(root, text="Input Data File:")
     labelNum2.place(relx=0.15, rely=0.4)

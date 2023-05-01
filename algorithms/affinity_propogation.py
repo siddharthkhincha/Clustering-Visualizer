@@ -149,12 +149,12 @@ class AffinityPropagation():
             
             exemplars = np.unique(np.argmax(sol, axis=1))
 
-            if last_exemplars.size != exemplars.size or np.all(last_exemplars != exemplars):
-                fig, labels, exemplars = self.plot_iteration(A, R, i)
-                figures.append(fig)
-                last_i = i
-            else:
-                print("Same image of " + str(i) + " as output" + str(last_i))
+            # if last_exemplars.size != exemplars.size or np.all(last_exemplars != exemplars):
+            fig, labels, exemplars = self.plot_iteration(A, R, i)
+            figures.append(fig)
+            last_i = i
+            # else:
+            #     print("Same image of " + str(i) + " as output" + str(last_i))
 
             if np.allclose(last_sol, sol):
                 print(exemplars, i)

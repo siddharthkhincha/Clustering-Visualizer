@@ -10,7 +10,7 @@ def read_mat(filename, header=True, reduce_dimensionality=True, n_components=3):
     data = scipy.io.loadmat(filename)
     data = data['D']
     if reduce_dimensionality:
-        data = PCA(n_components=n_components).fit_transform(data)
+        data = PCA( n_components=min(data[0],n_components) ).fit_transform(data)
 
     return data
 

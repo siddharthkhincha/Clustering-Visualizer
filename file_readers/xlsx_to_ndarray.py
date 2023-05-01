@@ -26,7 +26,7 @@ def read_xlsx(filename, sheet_name=None, header=False, reduce_dimensionality=Tru
     data = np.array(data)
     
     if reduce_dimensionality:
-        data = PCA(n_components=n_components).fit_transform(data)
+        data = PCA(n_components=min(data[0],n_components)).fit_transform(data)
 
     return data
 

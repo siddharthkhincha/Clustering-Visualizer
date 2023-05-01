@@ -8,25 +8,15 @@ def read_csv(filename, header=True, reduce_dimensionality=True, n_components=3):
     data = []
     if header:
         data = pd.read_csv(filename,header=1)
+        print("Header was given")
     else:
-       data =  pd.read_csv(filename)
-    # read the csv file
-    # with open(filename, 'r') as csvfile:
-    #     csvreader = csv.reader(csvfile)
+        print("No header was given")
+        data =  pd.read_csv(filename, header=0)
 
-    #     # skip the header if there is one
-    #     if header:
-    #         next(csvreader)
-
-    #     # add the data to a list
-    #     for row in csvreader:
-    #         data.append(row)
-            
-    # convert the data into a numpy array
     data = np.array(data)
     
     if reduce_dimensionality:
-        data = PCA(n_components=n_components).fit_transform(data)
+        data = PCA(n_components=min(n_components,len(data[0]))).fit_transform(data)
 
     return data
 
