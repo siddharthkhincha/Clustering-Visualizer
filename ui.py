@@ -21,6 +21,9 @@ from file_readers.xlsx_to_ndarray import read_xlsx
 # Default theme
 theme = "dark"
 
+# Global variables
+FOLDER_PATH = "./Outputs/"
+
 
 def display_ui():
 
@@ -34,15 +37,15 @@ def display_ui():
     def browseFiles():
         global filename
         filename = filedialog.askopenfilename(
-                                            # initialdir=os.path.expanduser("~"),  # Start at user home directory
-                                            initialdir=os.getcwd(),  # Start at current directory
-                                              title="Select a File",
-                                              filetypes=(
-                                                  ("CSV files", "*.csv"),
-                                                  ("Text files", "*.txt"),
-                                                  ("Excel (Current) files", "*.xlsx"),
-                                                  ("Excel (Legacy) files", "*.xls"),
-        ))  # Hide hidden files and folders
+            # initialdir=os.path.expanduser("~"),  # Start at user home directory
+            initialdir=os.getcwd(),  # Start at current directory
+            title="Select a File",
+            filetypes=(
+                ("CSV files", "*.csv"),
+                ("Text files", "*.txt"),
+                ("Excel (Current) files", "*.xlsx"),
+                ("Excel (Legacy) files", "*.xls"),
+            ))  # Hide hidden files and folders
         print(filename)
         file = open(filename, 'r')
         # content = file.read()
@@ -70,11 +73,11 @@ def display_ui():
 
         # Extract file extension
         extension = temp_arr[1]
-        
+
         # call appropriate file reader
-        input_data = None
+        global input_data 
         if extension == "csv":
-            input_data = read_csv(filename, True, False)
+            input_data = read_csv(filename, True, True, 3)
         elif extension == "xlsx":
             input_data = read_xlsx(filename)
         elif extension == "xls":
@@ -87,9 +90,11 @@ def display_ui():
         if (algo_clicked.get() == "affinity clustering"):
             print(algo_clicked.get())
             ret_arr.append(algo_clicked.get())
-            root.destroy()
+            root.destroy()  # destroy the window
             affinity_clustering_window()
             call_affinity(input_data, entry1.get(), entry2.get())
+            print("affinity clustering was called successfully with parameters: ",
+                  entry1.get(), entry2.get())
         elif (algo_clicked.get() == "kmeans"):
             print(algo_clicked.get())
             ret_arr.append(algo_clicked.get())
@@ -117,16 +122,19 @@ def display_ui():
 
         global entry1, entry2, entry3
 
+        # entry3 is null
+        entry3 = None
+
         # e1 = customtkinter.CTkEntry(top).place(relx = 0.5,y = 0.1)
         entry1 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="Between 0 and 1",
+                                        placeholder_text="> 0 , < 1",
                                         width=120,
                                         height=25,
                                         border_width=2,
                                         corner_radius=10)
         entry1.place(relx=0.5, rely=0.3)
         entry2 = customtkinter.CTkEntry(master=top,
-                                        placeholder_text="Between 0 and 1000",
+                                        placeholder_text="> 0 , < 1000",
                                         width=120,
                                         height=25,
                                         border_width=2,
@@ -234,12 +242,17 @@ def display_ui():
         top.mainloop()
 
     def submit2():
-        ret_arr.append(entry1.get())
-        ret_arr.append(entry2.get())
-        ret_arr.append(entry3.get())
-        print(ret_arr)
+     
+        # call the appropriate algorithms
+        if algo_clicked.get() == "affinity clustering":
+            call_affinity(input_data, entry1.get(), entry2.get())
+        elif algo_clicked.get() == "dbscan":
+            call_dbscan(input_data, entry1.get(), entry2.get())
+        elif algo_clicked.get() == "kmeans":
+            call_kmeans(input_data, entry1.get(), entry2.get())
+        
         top.destroy()
-        after_ui()
+        after_ui(algo_clicked.get())
 
     global root
     root = customtkinter.CTk()
@@ -297,7 +310,7 @@ def display_ui():
     root.mainloop()
 
 
-def slideshow():
+def slideshow(algorithm):
 
     def forward(img_no, max_image):
         submit_button.configure(text="Reset")
@@ -342,15 +355,28 @@ def slideshow():
     slideshow_root.title("Image Viewer")
     slideshow_root.geometry("432x450")
 
-    folder_path = './DBScan/'
+    
+    if algorithm == "affinity clustering":
+        folder_path = FOLDER_PATH  + "AffinityPropogations/" 
+    if algorithm == "dbscan":
+        folder_path = FOLDER_PATH + "DBScan/"
+    if algorithm == "kmeans":
+        folder_path = FOLDER_PATH + "KMeans/"
     List_images = []
     total_image = len(os.listdir(folder_path))
     print(len(os.listdir(folder_path)))
     for i in range(0, len(os.listdir(folder_path))):
-        img_path = folder_path + "output"+str(i)+".png"
-        img = Image.open(img_path)
-        List_images.append(ImageTk.PhotoImage(Image.open(img_path)))
-        img.close()
+        img_path = folder_path + "output" + str(i) + ".png"
+        print(img_path)
+        # check if file exists
+        if os.path.isfile(img_path):
+            img = Image.open(img_path)
+            List_images.append(ImageTk.PhotoImage(img))
+            img.close()
+        else:
+            print(f"File {img_path} does not exist.")
+
+    print("All images loaded successfully!")
 
     # print(List_images)
 
@@ -361,21 +387,21 @@ def slideshow():
     slideshow_root.mainloop()
 
 
-def after_ui():
+def after_ui(algorithm):
     global root2
     root2 = customtkinter.CTk()
     root2.geometry('400x200+100+200')
 
     root2.title('See results')
 
-    def show_slideshow():
+    def show_slideshow(algorithm):
         root2.destroy()
-        slideshow()
+        slideshow(algorithm)
 
     # slideshow_button = customtkinter.CTkButton(root2, text = "See video").place(relx=0.35,rely=0.4)
 
     slideshow_button = customtkinter.CTkButton(
-        root2, text="See slideshow", command=show_slideshow).place(relx=0.35, rely=0.2)
+        root2, text="See slideshow", command=show_slideshow(algorithm)).place(relx=0.35, rely=0.2)
 
     root2.mainloop()
 

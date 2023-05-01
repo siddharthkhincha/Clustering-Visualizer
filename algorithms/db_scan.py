@@ -150,7 +150,7 @@ def region_query(D, P, eps):
 
 
 def call_dbscan(Y):
-    os.chdir("..")
+    # os.chdir("..")
     os.system("rm -r Outputs/DBScan")
     os.mkdir("Outputs/DBScan")
 

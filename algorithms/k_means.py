@@ -32,7 +32,7 @@ def kmeans(X, K, max_iters=100):
     return all_centroids,all_labels
 
 def call_kmeans(Y):
-    os.chdir("..")
+    # os.chdir("..")
     os.system("rm -r Outputs/Kmeans")
     os.mkdir("Outputs/Kmeans")
     all_centroids, all_labels = kmeans(Y, K=3)

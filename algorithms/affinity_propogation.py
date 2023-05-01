@@ -124,8 +124,9 @@ class AffinityPropagation():
     def __init__(self, X=Y, damp=0.7, max_iters=100):
         global x
         x = X
-        damping = damp
-        iterations = max_iters
+        damping = float(damp)
+        iterations = int(max_iters)
+        print(type(iterations))
         global A
         global R
         global S
@@ -143,8 +144,10 @@ class AffinityPropagation():
         for i in range(iterations):
             self.update_r(damping)
             self.update_a(damping)
-
+            
             sol = A + R
+            
+            
             exemplars = np.unique(np.argmax(sol, axis=1))
 
             if last_exemplars.size != exemplars.size or np.all(last_exemplars != exemplars):
@@ -164,14 +167,16 @@ class AffinityPropagation():
 
 def call_affinity(dataset, damping_factor, max_iterations):
     # set working directory as the parent directory
-    os.chdir("..")
+    # os.chdir("..")
     # debug: print current working directory
     print("Current working directory: {0}".format(os.getcwd()))
     os.system("rm -r Outputs/AffinityPropogations")
     os.mkdir("Outputs/AffinityPropogations")
 
     # AffinityPropagation(dataset, damping_factor, max_iterations)
-    AffinityPropagation()
+    print ("Calling Affinity Propogation Clustering on dataset {0} with damping factor {1} and max iterations {2}".format(dataset, damping_factor, max_iterations))
+    AffinityPropagation(dataset, damping_factor, max_iterations)
+    print ("Affinity Propogation Clustering completed successfully!")
 
 
 if __name__ == "__main__":
