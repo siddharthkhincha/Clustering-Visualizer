@@ -62,9 +62,6 @@ def display_ui():
         error_label.place_forget()
         if file_radio_choice.get() == "select_file":
             if (str(filename) == ""):
-                print("Error: File not uploaded. Try again. In the submit function")
-                print(filename)
-                print(ret_arr[0])
                 # add a label to show that file is not uploaded, print in red
                 error_label.configure(text="Error: File not uploaded. Try again.")
                 error_label.place(relx=0.30, rely=0.85)
@@ -72,20 +69,14 @@ def display_ui():
             else:
                 error_label.place_forget()
                 
-            print(filename)
 
             # Extract file extension
             temp_arr = filename.split(".")
             extension = temp_arr[1]
 
             # call appropriate file reader
-            print(extension)
 
             if extension == "csv":
-                print(type(has_header))
-                print(has_header)
-                print(type(plot_dimension_choice))
-                print(plot_dimension_choice)
                 input_data = read_csv(filename, has_header,
                                     True, plot_dimension_choice)
             elif extension == "xlsx":
@@ -95,13 +86,14 @@ def display_ui():
                 input_data = read_xls(filename, has_header,
                                     True, plot_dimension_choice)
             elif extension == "mat":
-                print("HERE")
                 input_data = read_mat(filename, has_header,
                                     True, plot_dimension_choice)
         else:
             input_data = random_data_generated
 
         # call the appropriate algorithms
+        
+        executing_label.place(relx=0.30, rely=0.85)
         if algo_clicked.get() == "affinity clustering":
             call_affinity(input_data, float(entry1.get()), int(entry2.get()))
         elif algo_clicked.get() == "dbscan":
@@ -109,19 +101,22 @@ def display_ui():
         elif algo_clicked.get() == "kmeans":
             call_kmeans(input_data, int(entry1.get()), int(entry2.get()))
         algorithm = algo_clicked.get()
-        root.destroy()
+        executing_label.place_forget()
+        
         if video_required.get() == 1:
             call_video_generator(algorithm, "output.avi")
-        if slideshow_required.get() == 1:
-            slideshow(algorithm)
-
-        
-        if slideshow_required == 0 and video_required == 0:
+        if slideshow_required.get() == 0 and video_required.get() == 0:
             error_label.configure(text="Error: No output selected. Try again.")
+            error_label.place(relx=0.30, rely=0.85)
+        if slideshow_required.get() == 1: # Handle this case at last because infinite loop
+            root.destroy()
+            slideshow(algorithm)
+            
+
+
 
     def change_theme():
         global num  # add this line
-        print(num)
         if num == 0:
             customtkinter.set_appearance_mode("light")
             theme_button.configure(image=sun_icon)
@@ -132,7 +127,6 @@ def display_ui():
             theme_button.configure(image=moon_icon)
             theme_button.image = moon_icon
             num = 0
-        print(num)
 
     def generate_random_dataset():
         global random_data_generated
@@ -140,7 +134,6 @@ def display_ui():
         num_clusters = int(num_clusters_input.get())
         plot_dimension_choice = int(dimensions.get()[:1])
         random_data_generated = random_data(num_points, num_clusters, plot_dimension_choice)
-        print(f"Generating random dataset with {num_points} points of {plot_dimension_choice} dimensions and {num_clusters} clusters.")
         submit()
 
     def video(algorithm):
@@ -204,7 +197,6 @@ def display_ui():
         # add the information to the text box
         info_text.delete("0.0", "end")
         info_text.insert("0.0", info_file.read())
-        # print(info_text.cget("text"))
         info_file.close()    
     
     def close_handler():
@@ -313,6 +305,9 @@ def display_ui():
     
     error_label = customtkinter.CTkLabel( root, text="ERROR: File not uploaded. Try again", text_color="red" )
     error_label.place_forget()
+    
+    executing_label = customtkinter.CTkLabel( root, text="Running the clustering algorithm. Please wait.", text_color="green" )
+    executing_label.place_forget()
 
     file_or_random_creator()
     
@@ -384,7 +379,6 @@ def slideshow(algorithm):
 
     def forward(img_no, max_image):
         submit_button.configure(text="Reset")
-        print(img_no)
         global label
         global button_forward
         global button_back
@@ -412,7 +406,6 @@ def slideshow(algorithm):
         global button_back
         label = Label(image=List_images[img_no - 1])
         label.grid(row=1, column=0, columnspan=3)
-        print(img_no)
         if (img_no != 1):
             button_back = customtkinter.CTkButton(
                 slideshow_root, text="Back", command=lambda: back(img_no-1, max_image))
@@ -444,10 +437,8 @@ def slideshow(algorithm):
         folder_path = FOLDER_PATH + "Kmeans/"
     List_images = []
     total_image = len(os.listdir(folder_path))
-    print(len(os.listdir(folder_path)))
     for i in range(0, len(os.listdir(folder_path))):
         img_path = folder_path + "output" + str(i) + ".png"
-        print(img_path)
         # check if file exists
         if os.path.isfile(img_path):
             img = Image.open(img_path)
@@ -456,7 +447,6 @@ def slideshow(algorithm):
         else:
             print(f"File {img_path} does not exist.")
 
-    print("All images loaded successfully!")
 
     # print(List_images)
 
@@ -469,10 +459,8 @@ def slideshow(algorithm):
                     command=lambda value: forward(int(value), total_image))
     slider.place(relx=0.3, rely=0.85, relwidth=0.4)
 
-    close_button = customtkinter.CTkButton(
-        slideshow_root, text="Close", command=close_button_handler)
-
-    close_button.place(relx=0.9, rely=0.05)
+    close_button = customtkinter.CTkButton(slideshow_root, text="Close", command=close_button_handler)
+    close_button.place(relx=0.9, rely=0.9, relwidth=0.05, relheight=0.05)
 
     slideshow_root.mainloop()
 

@@ -63,7 +63,6 @@ def call_kmeans(dataset, num_clusters=3, max_iters=100):
     #     plt.scatter(Y[:, 0], Y[:, 1], c=labels)
     #     plt.scatter(centroids[:, 0], centroids[:, 1], marker='*', s=200, c='r',cmap=pylab.cm.gist_rainbow)
         colormap = [color_list[i] for i in labels]
-        print(dataset[0])
         if len(dataset[0]) == 3:
             ax = plt.axes(projection="3d")
             ax.scatter(dataset[:, 0], dataset[:, 1], dataset[:, 2], c=colormap)
@@ -76,4 +75,4 @@ def call_kmeans(dataset, num_clusters=3, max_iters=100):
         plt.savefig('Outputs/Kmeans/output'+str(i)+".png")
         plt.clf()
 
-    print("Kmeans done")
+    print("Kmeans Clustering Completed Successfully!")

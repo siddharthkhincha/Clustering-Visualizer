@@ -22,7 +22,6 @@ class AffinityPropagation():
         S = np.zeros((x.shape[0], x.shape[0]))
         R = np.array(S)
         A = np.array(S)
-        print(S.shape[0])
         # compute similarity for every data point.
         for i in range(x.shape[0]):
             for k in range(x.shape[0]):
@@ -94,10 +93,6 @@ class AffinityPropagation():
         exemplars = np.unique(labels)
 
         colors = dict(zip(exemplars, cycle('bgrcmyk')))
-        # colors = []
-        # for i in range(4):
-        #     color_list=color_list.extend(color_list)
-        # colors = dict(zip(exemplars,color_list))
         ax = plt.axes(projection="3d")
         for i in range(len(labels)):
             if len(x[0]) == 2:
@@ -147,7 +142,6 @@ class AffinityPropagation():
         x = X
         damping = float(damp)
         iterations = int(max_iters)
-        print(type(iterations))
         global A
         global R
         global S
@@ -183,13 +177,8 @@ class AffinityPropagation():
                 conv_iter = conv_iter + 1
 
             if (conv_iter == 5):
-                print(exemplars, i)
                 break
-            # else:
-             #   print("Same image of " + str(i) + " as output" + str(last_i))
-
             if np.allclose(last_sol, sol):
-                print(exemplars, i)
                 break
 
             last_sol = sol
@@ -197,15 +186,8 @@ class AffinityPropagation():
 
 
 def call_affinity(dataset, damping_factor, max_iterations):
-    # set working directory as the parent directory
-    # os.chdir("..")
-    # debug: print current working directory
-    print("Current working directory: {0}".format(os.getcwd()))
     shutil.rmtree("Outputs/AffinityPropogations")
     os.mkdir("Outputs/AffinityPropogations")
 
-    # AffinityPropagation(dataset, damping_factor, max_iterations)
-    print("Calling Affinity Propogation Clustering on dataset {0} with damping factor {1} and max iterations {2}".format(
-        dataset, damping_factor, max_iterations))
     AffinityPropagation(dataset, damping_factor, max_iterations)
     print("Affinity Propogation Clustering completed successfully!")
