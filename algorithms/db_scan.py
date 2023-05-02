@@ -4,8 +4,8 @@ import os
 import matplotlib.pyplot as plt
 from sklearn import datasets
 from sklearn.decomposition import PCA
-
-color_list = ['#001f3f', '#003300', '#8B0000', '#008b8b', '#8B008B', '#B8860B', '#2E2E2E', '#1C1C1C', '#8B2500', '#4B0082', '#A52A2A', '#8B5F65', '#4F4F4F', '#556B2F', '#800000', '#000080', '#008080', '#FF7F50', '#FFD700', '#4B0082', '#BDB76B', '#8B668B', '#32CD32', '#9932CC',
+import shutil
+color_list = ['#FF0000', '#00008b', '#00FF00', '#FFFF00', '#8B008B', '#B8860B', '#2E2E2E', '#1C1C1C', '#8B2500', '#4B0082', '#A52A2A', '#8B5F65', '#4F4F4F', '#556B2F', '#800000', '#000080', '#008080', '#FF7F50', '#FFD700', '#4B0082', '#BDB76B', '#8B668B', '#32CD32', '#9932CC',
               '#8B4726', '#8B668B', '#FA8072', '#8B3A3A', '#8B6969', '#40E0D0', '#EE82EE', '#F5DEB3', '#7FFFD4', '#F0FFFF', '#F5F5DC', '#7FFF00', '#6495ED', '#DC143C', '#00008B', '#008B8B', '#B8860B', '#696969', '#006400', '#BDB76B', '#8B008B', '#556B2F', '#FF8C00', '#9932CC', '#8B0000', '#E9967A']
 
 
@@ -149,7 +149,7 @@ def region_query(D, P, eps):
 
 def call_dbscan(dataset, epsilon=0.5, MinPts=5):
     # os.chdir("..")
-    os.system("rm -r Outputs/DBScan")
+    shutil.rmtree("Outputs/DBScan")
     os.mkdir("Outputs/DBScan")
 
     all_labels = dbscan(dataset, epsilon, MinPts)

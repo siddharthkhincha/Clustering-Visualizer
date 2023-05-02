@@ -12,6 +12,7 @@ from algorithms.db_scan import call_dbscan
 from algorithms.k_means import call_kmeans
 
 from random_generator import random_data
+from video_generator import call_video_generator
 
 
 # Import file_readers
@@ -31,10 +32,11 @@ FOLDER_PATH = "./Outputs/"
 ############################ MAIN GUI ########################################################################
 
 def display_ui():
-
+    global filename
     ############################ HELPER FUNCTIONS ################################################################
 
     def browseFiles():
+        global filename
         filename = filedialog.askopenfilename(
             # initialdir=os.path.expanduser("~"),  # Start at user home directory
             initialdir=os.getcwd(),  # Start at current directory
@@ -50,16 +52,21 @@ def display_ui():
         print(algo_clicked.get())
         browse_button.configure(text=filename.split("/")[-1])
         ret_arr.append(filename)
+        print(ret_arr)
         return filename
 
     def submit():
-        
+        global filename
         global input_data
         plot_dimension_choice = int(dimensions.get()[:1])
+        error_label.place_forget()
         if file_radio_choice.get() == "select_file":
-            if (filename == ""):
-                print("Error: File not uploaded. Try again")
+            if (str(filename) == ""):
+                print("Error: File not uploaded. Try again. In the submit function")
+                print(filename)
+                print(ret_arr[0])
                 # add a label to show that file is not uploaded, print in red
+                error_label.configure(text="Error: File not uploaded. Try again.")
                 error_label.place(relx=0.30, rely=0.85)
                 return
             else:
@@ -101,9 +108,16 @@ def display_ui():
             call_dbscan(input_data, float(entry1.get()), int(entry2.get()))
         elif algo_clicked.get() == "kmeans":
             call_kmeans(input_data, int(entry1.get()), int(entry2.get()))
-
+        algorithm = algo_clicked.get()
         root.destroy()
-        after_ui(algo_clicked.get())
+        if video_required.get() == 1:
+            call_video_generator(algorithm, "output.avi")
+        if slideshow_required.get() == 1:
+            slideshow(algorithm)
+
+        
+        if slideshow_required == 0 and video_required == 0:
+            error_label.configure(text="Error: No output selected. Try again.")
 
     def change_theme():
         global num  # add this line
@@ -128,6 +142,9 @@ def display_ui():
         random_data_generated = random_data(num_points, num_clusters, plot_dimension_choice)
         print(f"Generating random dataset with {num_points} points of {plot_dimension_choice} dimensions and {num_clusters} clusters.")
         submit()
+
+    def video(algorithm):
+        pass
 
     def select_file_handler():
         num_points_label.place_forget()
@@ -189,14 +206,12 @@ def display_ui():
         info_text.insert("0.0", info_file.read())
         # print(info_text.cget("text"))
         info_file.close()    
-        
+    
+    def close_handler():
+        root.destroy()
+        exit(0)    
     ############################ BUILDING UI ###################################################################
-
-    file_types = ["csv", "xlsx", "xls", "mat"]
-    
-    global filename
-    filename = ""
-    
+       
     customtkinter.set_appearance_mode("dark")
     global has_header, plot_dimension_choice, num_clusters_entry, num_points_entry, file_radio_choice, ret_arr, num
     num = 0 # means currently dark mode is on
@@ -205,6 +220,7 @@ def display_ui():
     global root
     root = customtkinter.CTk()
     root.geometry('500x300+100+200')
+    
     # use full screen
     root.attributes('-fullscreen', True)
     customtkinter.set_appearance_mode("dark")
@@ -258,8 +274,6 @@ def display_ui():
 
     file_radio_choice = customtkinter.StringVar(value="select_file")
 
-
-
     file_radio_select = customtkinter.CTkRadioButton(root, text="Select a File", variable=file_radio_choice, value="select_file", command=file_or_random_creator)
     file_radio_select.place(relx=0.20, rely=0.3)
 
@@ -278,6 +292,18 @@ def display_ui():
     num_clusters_label = customtkinter.CTkLabel(root, text="Number of clusters:")
     num_clusters_input = customtkinter.CTkEntry(root)
 
+
+
+    customtkinter.CTkLabel(root, text="Output Format:").place(relx=0.05, rely=0.5)
+    
+    slideshow_required = customtkinter.IntVar(value=1)
+    slideshow_switch = customtkinter.CTkSwitch(root, text="Slideshow", 
+                                 variable=slideshow_required, onvalue=1, offvalue=0)
+    slideshow_switch.place(relx=0.35, rely=0.5)
+    
+    video_required = customtkinter.IntVar(value=0)
+    video_switch = customtkinter.CTkSwitch(root, text="Video", variable=video_required, onvalue=1, offvalue=0)
+    video_switch.place(relx=0.35, rely=0.55)
 
     generate_button = customtkinter.CTkButton(
         root, text="Generate", command=generate_random_dataset)
@@ -343,11 +369,9 @@ def display_ui():
     
     
     #Adding the close button
-    close_button = customtkinter.CTkButton(root, text="Close", command=root.destroy)
+    close_button = customtkinter.CTkButton(root, text="Close", command=close_handler)
     close_button.place(relx=0.9, rely=0.9, relwidth=0.05, relheight=0.05)
     
-    
-
     root.mainloop()
 
 
@@ -356,7 +380,6 @@ def display_ui():
 
 
 def slideshow(algorithm):
-
     ############################ HELPER FUNCTIONS ##############################################################
 
     def forward(img_no, max_image):
@@ -380,7 +403,7 @@ def slideshow(algorithm):
             button_for.grid(row=5, column=2)
 
         # update slider value
-        slider.set(img_no)
+            slider.set(img_no)
 
     def back(img_no, max_image):
 
@@ -410,10 +433,7 @@ def slideshow(algorithm):
     ############################ BUILDING UI ###################################################################
 
     slideshow_root = customtkinter.CTk()
-
     slideshow_root.title("Image Viewer")
-    # slideshow_root.geometry("432x450")
-    # slideshow should start with full screen
     slideshow_root.attributes('-fullscreen', True)
 
     if algorithm == "affinity clustering":
@@ -446,7 +466,7 @@ def slideshow(algorithm):
 
     # add slider
     slider = Scale(slideshow_root, from_=1, to=total_image, orient=HORIZONTAL,
-                   command=lambda value: forward(int(value), total_image))
+                    command=lambda value: forward(int(value), total_image))
     slider.place(relx=0.3, rely=0.85, relwidth=0.4)
 
     close_button = customtkinter.CTkButton(
@@ -457,37 +477,9 @@ def slideshow(algorithm):
     slideshow_root.mainloop()
 
 
-##############################################################################################################
-############################ START SLIDESHOW UI ##############################################################
-
-def after_ui(algorithm):
-
-    ############################ HELPER FUNCTIONS ##############################################################
-
-    def show_slideshow(algorithm):
-        root2.destroy()
-        slideshow(algorithm)
-        
-    def home_handler():
-        root2.destroy()
-        display_ui()
-
-    ############################ BUILDING UI ###################################################################
-
-    global root2
-    root2 = customtkinter.CTk()
-    root2.geometry('400x200+100+200')
-    root2.attributes('-fullscreen', True)
-    root2.title('See results')
-    customtkinter.CTkButton( root2, text="See slideshow", command=show_slideshow(algorithm)).place(relx=0.35, rely=0.15)
-    customtkinter.CTkButton( root2, text="Home", command=home_handler).place(relx=0.35, rely=0.35)
-    customtkinter.CTkButton( root2, text="Close", command=root2.destroy).place(relx=0.35, rely=0.55)
-    root2.mainloop()
+    ##############################################################################################################
+    ############################ MAIN FUNCTION ###################################################################
 
 
-
-##############################################################################################################
-############################ MAIN FUNCTION ###################################################################
-
+filename = ""
 display_ui()
-print(ret_arr)
