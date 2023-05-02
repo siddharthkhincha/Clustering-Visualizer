@@ -80,7 +80,7 @@ def display_ui():
                 input_data = read_csv(filename, has_header,
                                     True, plot_dimension_choice)
             elif extension == "xlsx":
-                input_data = read_xlsx(filename, has_header,
+                input_data = read_xlsx(filename, None,  has_header,
                                     True, plot_dimension_choice)
             elif extension == "xls":
                 input_data = read_xls(filename, has_header,

@@ -27,7 +27,7 @@ def call_video_generator(algorithm, output_file_name):
     if algorithm == "affinity clustering":
         input_dir = "Outputs/AffinityPropogations"
     elif algorithm == "kmeans":
-        input_dir = "Outputs/KMeans"
+        input_dir = "Outputs/Kmeans"
     elif algorithm == "dbscan":
         input_dir = "Outputs/DBScan"
     else:
