@@ -93,7 +93,9 @@ class AffinityPropagation():
         exemplars = np.unique(labels)
 
         colors = dict(zip(exemplars, cycle('bgrcmyk')))
-        ax = plt.axes(projection="3d")
+        if(len(x[0]) == 3):
+            ax = plt.axes(projection="3d")
+            
         for i in range(len(labels)):
             if len(x[0]) == 2:
                 X = x[i][0]
