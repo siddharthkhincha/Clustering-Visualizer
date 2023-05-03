@@ -19,7 +19,7 @@ from video_generator import call_video_generator
 from file_readers.csv_to_ndarray import read_csv
 from file_readers.xlsx_to_ndarray import read_xlsx
 from file_readers.xls_to_ndarray import read_xls
-from file_readers.mat_to_ndarray import read_mat
+
 
 # Default theme
 theme = "dark"
@@ -45,8 +45,8 @@ def display_ui():
                 ("CSV files", "*.csv"),
                 ("Text files", "*.txt"),
                 ("Excel (Current) files", "*.xlsx"),
-                ("Excel (Legacy) files", "*.xls"),
-                ("Matlab files", "*.mat")
+                ("Excel (Legacy) files", "*.xls")
+                
             ))
         print(filename)
         print(algo_clicked.get())
@@ -84,10 +84,8 @@ def display_ui():
                                     True, plot_dimension_choice)
             elif extension == "xls":
                 input_data = read_xls(filename, has_header,
-                                    True, plot_dimension_choice)
-            elif extension == "mat":
-                input_data = read_mat(filename, has_header,
-                                    True, plot_dimension_choice)
+                                     plot_dimension_choice)
+            
         else:
             input_data = random_data_generated
 
